@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -71,9 +72,7 @@ fun MainScreen(modifier: Modifier = Modifier, coins: List<String> = listOf()) {
             }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(2) {
-                CoinListItem()
-            }
+            items(2) {}
         }
     }
 }
@@ -84,10 +83,16 @@ fun CoinListItem(coinInfo: CoinListItemModel) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(start = 16.dp, top = 12.dp)) {
-        AsyncImage(model = "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400", contentDescription = null, modifier = Modifier.size(40.dp))
+        AsyncImage(model = coinInfo.coinImageUrl, contentDescription = null, modifier = Modifier.size(40.dp))
         Column {
             Text(coinInfo.coinName, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             Text(coinInfo.coinShortName, fontSize = 14.sp, modifier = Modifier.padding(top = 2.dp))
+        }
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+            Column {
+                Text("${coinInfo.currencyForPrice} ${coinInfo.coinCurrentPrice}")
+                Text("${coinInfo.currentTendency}", color = if(coinInfo.currentTendency < 0) Color.Red else Color.Green)
+            }
         }
     }
 }
