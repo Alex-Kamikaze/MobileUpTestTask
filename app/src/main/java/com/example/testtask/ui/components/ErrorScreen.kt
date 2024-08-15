@@ -29,8 +29,10 @@ import com.example.testtask.R
 @Preview
 @Composable
 fun ErrorScreen(onRestartButtonClick: () -> Unit = {}) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp).height(240.dp)) {
-        Icon(imageVector = ImageVector.vectorResource(id = R.drawable.bitcoin_img), contentDescription = null, modifier = Modifier.size(120.dp))
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
+        .padding(10.dp)
+        .height(240.dp)) {
+        Icon(imageVector = ImageVector.vectorResource(id = R.drawable.bitcoin_img), contentDescription = null, tint = Color.Unspecified)
         Text("Произошла какая-то ошибка :(", fontSize = 16.sp)
         Text("Попробуем снова?", fontSize = 16.sp)
         Button(onClick = { onRestartButtonClick() }, modifier = Modifier
