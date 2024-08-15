@@ -17,11 +17,11 @@ class CoinRepositoryImpl @Inject constructor(val api: GeckoApi): CoinRepository{
                    coinId = coinInfo["id"].toString(),
                    coinName = coinInfo["name"].toString(),
                    coinImageUrl = coinInfo["image"].toString(),
-                   coinCurrentPrice = coinInfo["current_price"].toString().toInt(),
+                   coinCurrentPrice = coinInfo["current_price"].toString().toDouble(),
                    coinShortName = coinInfo["symbol"].toString(),
                    currencyForPrice = if(currency == "RUB") "₽" else "$",
-                   currentTendency = coinInfo["price_change_24h"].toString().toInt(),
-                   percentTendency = coinInfo["price_change_percentage_24h"].toString().toInt()
+                   currentTendency = coinInfo["price_change_24h"].toString().toDouble(),
+                   percentTendency = coinInfo["price_change_percentage_24h"].toString().toDouble()
                 )
             })
         }
