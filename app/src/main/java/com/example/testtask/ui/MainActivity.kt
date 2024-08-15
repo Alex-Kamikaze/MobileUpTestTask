@@ -14,10 +14,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgs
 import androidx.navigation.toRoute
+import com.example.testtask.ui.components.CoinDetailsScreen
 import com.example.testtask.ui.components.MainScreen
 import com.example.testtask.ui.routes.CoinDetailsScreenRoute
 import com.example.testtask.ui.routes.MainScreenRoute
 import com.example.testtask.ui.theme.TestTaskTheme
+import com.example.testtask.ui.viewmodels.CoinDetailsViewModel
 import com.example.testtask.ui.viewmodels.MainScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,11 +36,17 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = MainScreenRoute) {
                         composable<MainScreenRoute> {
                             mainScreenViewModel.loadCoins()
-                            MainScreen(viewModel = mainScreenViewModel)
+                            MainScreen(viewModel = mainScreenViewModel) { coinId ->
+                                navController.navigate(CoinDetailsScreenRoute(coinName = coinId))
+                            }
                         }
                         composable<CoinDetailsScreenRoute> { backStackEntry ->
                             val coinId = backStackEntry.toRoute<CoinDetailsScreenRoute>().coinName
-
+                            val viewModel: CoinDetailsViewModel by viewModels()
+                            viewModel.loadCoinDetails(coinId)
+                            CoinDetailsScreen(coinId = coinId, viewModel = viewModel) {
+                                navController.popBackStack()
+                            }
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.example.testtask.ui.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.testtask.R
 import com.example.testtask.domain.models.CoinListItemModel
@@ -41,7 +43,7 @@ import kotlin.math.absoluteValue
 
 
 @Composable
-fun MainScreen(viewModel: MainScreenViewModel) {
+fun MainScreen(viewModel: MainScreenViewModel, onCoinClick: (String) -> Unit) {
     val currencies = listOf("USD", "RUB")
     var chosenCurrency by remember { mutableIntStateOf(0) }
     val loadingState = viewModel.uiState.collectAsState()
@@ -57,8 +59,8 @@ fun MainScreen(viewModel: MainScreenViewModel) {
         UIState.Loading -> {
             LoadingScreen()
         }
-        is UIState.Success -> {
-            val coins = (loadingState.value as UIState.Success).coins
+        is UIState.Success<*> -> {
+            val coins = (loadingState.value as UIState.Success<List<CoinListItemModel>>).coins
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +101,9 @@ fun MainScreen(viewModel: MainScreenViewModel) {
                 // Проверяем, является ли loadingState успешным перед использованием
                     LazyColumn(modifier = Modifier.fillMaxWidth()) {
                         items(coins.size) { coin ->
-                            CoinListItem(coinInfo = coins[coin])
+                            CoinListItem(coinInfo = coins[coin]) {
+                                onCoinClick(coins[coin].coinName.toLowerCase())
+                            }
                         }
                     }
             }
@@ -110,10 +114,11 @@ fun MainScreen(viewModel: MainScreenViewModel) {
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun CoinListItem(coinInfo: CoinListItemModel) {
+fun CoinListItem(coinInfo: CoinListItemModel, onClick: () -> Unit) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(start = 16.dp, top = 12.dp)) {
+        .padding(start = 16.dp, top = 12.dp)
+        .clickable { onClick() }) {
         AsyncImage(model = coinInfo.coinImageUrl, contentDescription = null, modifier = Modifier.size(40.dp))
         Column {
             Text(coinInfo.coinName, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)

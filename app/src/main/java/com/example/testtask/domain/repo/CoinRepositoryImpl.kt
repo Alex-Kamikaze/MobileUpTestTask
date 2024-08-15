@@ -33,19 +33,12 @@ class CoinRepositoryImpl @Inject constructor(val api: GeckoApi): CoinRepository{
     override suspend fun getCoinInfo(coinId: String): Result<CoinDetailsModel> {
         return try {
             val response = api.getCoinInfo(coinId)
-            val gson = Gson()
-            val imageType = object : TypeToken<Map<String, Map<String, String>>>() {}.type
-            val imageVariants: Map<String, Map<String, String>> = gson.fromJson(response["image"].toString(), imageType)
-            val descriptionType = object: TypeToken<Map<String, Map<String, String>>>() {}.type
-            val descriptionTag: Map<String, Map<String, String>> = gson.fromJson(response["description"].toString(), descriptionType)
-            val categoriesType = object : TypeToken<Map<String, List<String>>>() {}.type
-            val categoriesList: Map<String, List<String>> = gson.fromJson(response["categories"].toString(), categoriesType)
             Result.success(
                 CoinDetailsModel(
-                    coinName = response["name"].toString(),
-                    coinImageUrl = imageVariants["large"].toString(),
-                    coinCategories = (categoriesList["categories"]?.joinToString(", ") ?: emptyList<String>()).toString(),
-                    coinDescription = descriptionTag["en"].toString()
+                    coinDescription = response.description.en,
+                    coinImageUrl = response.image.large,
+                    coinName = response.name,
+                    coinCategories = response.categories.joinToString(", ")
                 )
             )
         }
