@@ -8,5 +8,6 @@ data class CoinListItemModel(
     val currencyForPrice: String,
     // Проценты роста или падения стоимости монеты
     val currentTendency: Int,
-    val coinShortName: String
+    val coinShortName: String,
+    val percentTendency: Int
 )

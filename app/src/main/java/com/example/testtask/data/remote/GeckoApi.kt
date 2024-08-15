@@ -7,7 +7,7 @@ import retrofit2.http.Query
 interface GeckoApi {
     @GET("/coins/markets")
     @Headers("x-cg-demo-api-key: $API_KEY")
-    suspend fun getCoinList(@Query("vs_currency") currency: String): Map<String, Any>
+    suspend fun getCoinList(@Query("vs_currency") currency: String): List<Map<String, Any>>
 
     @GET("/coins/id")
     @Headers("x-cg-demo-api-key: $API_KEY")
