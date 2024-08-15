@@ -55,9 +55,7 @@ fun MainScreen(viewModel: MainScreenViewModel) {
             ErrorScreen { viewModel.loadCoins(currencies[chosenCurrency]) }
         }
         UIState.Loading -> {
-            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgressIndicator(modifier = Modifier.size(50.dp), color = colorResource(id = R.color.chosenCurrencyButtonColor).copy(alpha = 0.7f))
-            }
+            LoadingScreen()
         }
         is UIState.Success -> {
             val coins = (loadingState.value as UIState.Success).coins
@@ -121,7 +119,9 @@ fun CoinListItem(coinInfo: CoinListItemModel) {
             Text(coinInfo.coinName, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             Text(coinInfo.coinShortName, fontSize = 14.sp, modifier = Modifier.padding(top = 2.dp))
         }
-        Box(modifier = Modifier.fillMaxWidth().padding(end = 10.dp), contentAlignment = Alignment.CenterEnd) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 10.dp), contentAlignment = Alignment.CenterEnd) {
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
                 val sign = if(coinInfo.currentTendency < 0) "-" else "+"
                 val formatedTendency = String.format("%.4f", coinInfo.currentTendency.absoluteValue)
