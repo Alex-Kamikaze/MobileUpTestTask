@@ -60,7 +60,7 @@ fun MainScreen(viewModel: MainScreenViewModel, onCoinClick: (String) -> Unit) {
             LoadingScreen()
         }
         is UIState.Success<*> -> {
-            val coins = (loadingState.value as UIState.Success<List<CoinListItemModel>>).coins
+            val coins = (loadingState.value as UIState.Success<List<CoinListItemModel>>).data
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(modifier = Modifier
                     .fillMaxWidth()

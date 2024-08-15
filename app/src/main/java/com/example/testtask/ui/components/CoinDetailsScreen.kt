@@ -1,8 +1,5 @@
 package com.example.testtask.ui.components
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,8 +47,7 @@ fun CoinDetailsScreen(coinId: String, viewModel: CoinDetailsViewModel, onNavigat
         }
         UIState.Loading -> LoadingScreen()
         is UIState.Success<*> -> {
-            // TODO: Заменить coins на data
-            val coinDetails = (loadingState.value as UIState.Success<CoinDetailsModel>).coins
+            val coinDetails = (loadingState.value as UIState.Success<CoinDetailsModel>).data
             Scaffold(modifier = Modifier.fillMaxSize(), topBar = { TopAppBar(title = { Text(coinDetails.coinName) }, navigationIcon = { IconButton(
                 onClick = { onNavigateBack() }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null) }

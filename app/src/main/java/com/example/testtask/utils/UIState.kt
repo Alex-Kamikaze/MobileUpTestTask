@@ -4,6 +4,6 @@ import com.example.testtask.domain.models.CoinListItemModel
 
 sealed class UIState {
     data object Loading : UIState()
-    data class Success<T>(val coins: T) : UIState()
+    data class Success<T>(val data: T) : UIState()
     data class Error(val message: String) : UIState()
 }

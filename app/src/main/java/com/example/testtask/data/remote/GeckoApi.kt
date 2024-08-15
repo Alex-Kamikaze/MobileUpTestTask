@@ -1,6 +1,6 @@
 package com.example.testtask.data.remote
 
-import com.example.testtask.data.CoinDetailsDTO
+import com.example.testtask.data.models.CoinDetailsDTO
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
