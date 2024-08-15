@@ -16,18 +16,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,14 +47,17 @@ import com.example.testtask.utils.UIState
 import kotlin.math.absoluteValue
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel, onCoinClick: (String) -> Unit) {
     val currencies = listOf("USD", "RUB")
     var chosenCurrency by remember { mutableIntStateOf(0) }
     val loadingState = viewModel.uiState.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
+    var isRefreshing by remember { mutableStateOf(false)}
 
-    LaunchedEffect(key1 = loadingState) {
-        println(loadingState)
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        isRefreshing = pullToRefreshState.isRefreshing
     }
 
     when(loadingState.value) {
@@ -97,8 +105,9 @@ fun MainScreen(viewModel: MainScreenViewModel, onCoinClick: (String) -> Unit) {
                         }
                     }
                 }
-
-                // Проверяем, является ли loadingState успешным перед использованием
+                Box(
+                    modifier = Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)
+                ) {
                     LazyColumn(modifier = Modifier.fillMaxWidth()) {
                         items(coins.size) { coin ->
                             CoinListItem(coinInfo = coins[coin]) {
@@ -106,6 +115,25 @@ fun MainScreen(viewModel: MainScreenViewModel, onCoinClick: (String) -> Unit) {
                             }
                         }
                     }
+
+                    if(pullToRefreshState.isRefreshing) {
+                        LaunchedEffect(true) {
+                            isRefreshing = true
+                            viewModel.loadCoins(currencies[chosenCurrency])
+                            pullToRefreshState.endRefresh()
+                        }
+                    }
+
+                    LaunchedEffect(isRefreshing) {
+                        if(isRefreshing) {
+                            pullToRefreshState.startRefresh()
+                        } else {
+                            pullToRefreshState.endRefresh()
+                        }
+                    }
+                    
+                    PullToRefreshContainer(state = pullToRefreshState, modifier = Modifier.align(Alignment.TopCenter).padding(top = 10.dp))
+                }
             }
         }
     }
